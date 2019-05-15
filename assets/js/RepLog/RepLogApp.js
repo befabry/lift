@@ -1,89 +1,69 @@
 import React, { Component } from "react";
-import RepLogList from "./RepLogList";
+import RepLogs from './Replogs';
+import PropTypes from "prop-types";
+import uuid from 'uuid/v4';
 
 export default class RepLogApp extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            highlightedRowId: null
+            highlightedRowId: null,
+            repLogs: [
+                { id: uuid(), reps: 25, itemLabel: 'Big Fat Cat', totalWeightLifted: 102 },
+                { id: uuid(), reps: 10, itemLabel: 'Big Fat Cat', totalWeightLifted: 220 },
+                { id: uuid(), reps: 45, itemLabel: 'Car', totalWeightLifted: 550 },
+            ],
+            numberOfHearts: 1,
         };
+
+        this.handleRowClick = this.handleRowClick.bind(this);
+        this.handleAddReplog = this.handleAddReplog.bind(this);
+        this.handleHeartChange = this.handleHeartChange.bind(this);
     }
 
-    handleRowClick(repLogsId, event){
-        this.setState({highlightedRowId: repLogsId});
+    handleRowClick(repLogsId) {
+        this.setState({ highlightedRowId: repLogsId });
+    }
+
+    handleAddReplog(itemLabel, reps) {
+        const newRep = {
+            id: uuid(),
+            reps: reps,
+            itemLabel: itemLabel,
+            totalWeightLifted: Math.floor(Math.random() * 50),
+        }
+        
+        //Ch21 : Don't mutate my state. Using callback 
+        this.setState(prevState => {
+            const newRepLogs = [...prevState.repLogs, newRep];
+
+            return {repLogs: newRepLogs};
+        });
+
+        const newRepLogs = [...this.state.repLogs, newRep];
+        this.setState({repLogs: newRepLogs});
+    }
+
+    handleHeartChange(heartCount){
+        this.setState({
+            numberOfHearts: heartCount,
+        });
     }
 
     render() {
-        const { highlightedRowId } = this.state;
-        const { withHeart } = this.props;
-
-        let heart = '';
-        if (withHeart) {
-            heart = <span>❤️</span>;
-        }
-
         return (
-            <div className="row">
-                <div className="col-md-7">
-                    <h2>Lift History {heart}</h2>
-
-                    <table className="table table-striped">
-                        <thead>
-                            <tr>
-                                <th>What</th>
-                                <th>How many times?</th>
-                                <th>Weight</th>
-                                <th>&nbsp;</th>
-                            </tr>
-                        </thead>
-                        <RepLogList highlightedRowId={highlightedRowId} />
-                        <tfoot>
-                            <tr>
-                                <td>&nbsp;</td>
-                                <th>Total</th>
-                                <th>TODO</th>
-                                <td>&nbsp;</td>
-                            </tr>
-                        </tfoot>
-                    </table>
-
-                    {/* <div className="js-new-rep-log-form-wrapper">
-                        {{ include('lift/_form.html.twig') }}
-                    </div> */}
-                    <form className="form-inline">
-                        <div className="form-group">
-                            <label className="sr-only control-label required" htmlFor="rep_log_item">
-                                What did you lift?
-                            </label>
-                            <select id="rep_log_item"
-                                name="item"
-                                required="required"
-                                className="form-control">
-                                <option value="">What did you lift?</option>
-                                <option value="cat">Cat</option>
-                                <option value="fat_cat">Big Fat Cat</option>
-                                <option value="laptop">My Laptop</option>
-                                <option value="coffee_cup">Coffee Cup</option>
-                            </select>
-                        </div>
-                        &nbsp;
-                        <div className="form-group">
-                            <label className="sr-only control-label required" htmlFor="rep_log_reps">
-                                How many times?
-                            </label>
-                            <input type="number" id="rep_log_reps"
-                                name="reps" required="required"
-                                placeholder="How many times?"
-                                className="form-control" />
-                        </div>
-                        &nbsp;
-                        <button type="submit" className="btn btn-primary">I Lifted it!</button>
-                    </form>
-
-
-                </div>
-            </div>
+            <RepLogs
+                {...this.props}
+                {...this.state}
+                onRowClick={this.handleRowClick}
+                onAddReplog={this.handleAddReplog}
+                onHeartChange={this.handleHeartChange}
+            />
         );
     }
 }
+
+RepLogApp.propTypes = {
+    withHeart: PropTypes.bool,
+};

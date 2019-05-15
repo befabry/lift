@@ -28,6 +28,13 @@ Encore
     // .enableVersioning(Encore.isProduction())
     .enableVersioning()
     .enableReactPreset()
+    .configureBabel((babelConfig) => {
+        if(Encore.isProduction()){
+            babelConfig.plugins.push(
+                'transform-react-remove-prop-types'
+            )
+        }
+    })
 ;
 
 // export the final configuration
