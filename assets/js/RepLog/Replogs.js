@@ -18,13 +18,15 @@ const calculateTotalWeightFancier = repLogs => repLogs.reduce((total, repLog) =>
 
 export default function Replogs(props) {
     const {
-        withHeart,
         highlightedRowId,
+        isLoaded,
+        numberOfHearts,
+        onAddReplog,
+        onDeleteRepLog,
+        onHeartChange,
         onRowClick,
         repLogs,
-        onAddReplog,
-        numberOfHearts,
-        onHeartChange,
+        withHeart
     } = props;
 
     let heart = '';
@@ -58,6 +60,8 @@ export default function Replogs(props) {
                         // On passe la fonction (callback)
                         onRowClick={onRowClick}
                         repLogs={repLogs}
+                        onDeleteRepLog={onDeleteRepLog}
+                        isLoaded={isLoaded}
                     />
                     <tfoot>
                         <tr>
@@ -83,8 +87,10 @@ export default function Replogs(props) {
 
 Replogs.propTypes = {
     highlightedRowId: PropTypes.any,
+    isLoaded: PropTypes.bool.isRequired,
     numberOfHearts: PropTypes.number.isRequired,
     onAddReplog: PropTypes.func.isRequired,
+    onDeleteRepLog: PropTypes.func.isRequired,
     onHeartChange: PropTypes.func.isRequired,
     onRowClick: PropTypes.func.isRequired,
     repLogs: PropTypes.array.isRequired,

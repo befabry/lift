@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import RepLogs from './Replogs';
 import PropTypes from "prop-types";
-import uuid from 'uuid/v4';
+import { getRepLogs, deleteRepLog, createRepLog } from '../Api/rep_log_api';
 
 export default class RepLogApp extends Component {
     constructor(props) {
@@ -9,45 +9,67 @@ export default class RepLogApp extends Component {
 
         this.state = {
             highlightedRowId: null,
-            repLogs: [
-                { id: uuid(), reps: 25, itemLabel: 'Big Fat Cat', totalWeightLifted: 102 },
-                { id: uuid(), reps: 10, itemLabel: 'Big Fat Cat', totalWeightLifted: 220 },
-                { id: uuid(), reps: 45, itemLabel: 'Car', totalWeightLifted: 550 },
-            ],
+            repLogs: [],
             numberOfHearts: 1,
+            isLoaded: false,
         };
 
         this.handleRowClick = this.handleRowClick.bind(this);
         this.handleAddReplog = this.handleAddReplog.bind(this);
         this.handleHeartChange = this.handleHeartChange.bind(this);
+        this.handleDeleteRepLog = this.handleDeleteRepLog.bind(this);
+    }
+
+    componentDidMount() {
+        getRepLogs()
+            .then(data => {
+                this.setState({
+                    repLogs: data,
+                    isLoaded: true,
+                });
+            });
     }
 
     handleRowClick(repLogsId) {
         this.setState({ highlightedRowId: repLogsId });
     }
 
-    handleAddReplog(itemLabel, reps) {
+    handleAddReplog(item, reps) {
         const newRep = {
-            id: uuid(),
             reps: reps,
-            itemLabel: itemLabel,
-            totalWeightLifted: Math.floor(Math.random() * 50),
+            item: item,
         }
-        
+
+        createRepLog(newRep)
+            .then(repLog => {
+                this.setState(prevState => {
+                    const newRepLogs = [...prevState.repLogs, repLog];
+
+                    return {repLogs: newRepLogs};
+                });
+            });
+
         //Ch21 : Don't mutate my state. Using callback 
-        this.setState(prevState => {
-            const newRepLogs = [...prevState.repLogs, newRep];
+        // this.setState(prevState => {
+        //     const newRepLogs = [...prevState.repLogs, newRep];
 
-            return {repLogs: newRepLogs};
-        });
-
-        const newRepLogs = [...this.state.repLogs, newRep];
-        this.setState({repLogs: newRepLogs});
+        //     return { repLogs: newRepLogs };
+        // });
     }
 
-    handleHeartChange(heartCount){
+    handleHeartChange(heartCount) {
         this.setState({
             numberOfHearts: heartCount,
+        });
+    }
+
+    handleDeleteRepLog(id) {
+        deleteRepLog(id);
+        
+        this.setState((setState) => {
+            return {
+                repLogs: this.state.repLogs.filter(repLogs => repLogs.id !== id)
+            };
         });
     }
 
@@ -59,6 +81,7 @@ export default class RepLogApp extends Component {
                 onRowClick={this.handleRowClick}
                 onAddReplog={this.handleAddReplog}
                 onHeartChange={this.handleHeartChange}
+                onDeleteRepLog={this.handleDeleteRepLog}
             />
         );
     }

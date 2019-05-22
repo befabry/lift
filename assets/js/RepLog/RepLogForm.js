@@ -38,7 +38,7 @@ export default class RepLogForm extends Component {
         }
 
         onAddReplog(
-            itemSelect.options[itemSelect.selectedIndex].text,
+            itemSelect.options[itemSelect.selectedIndex].value,
             quantityInput.value
         );
 
