@@ -10,9 +10,14 @@ export default class RepLogApp extends Component {
         this.state = {
             highlightedRowId: null,
             repLogs: [],
+            newRepLogValidationErrorMessage: '',
             numberOfHearts: 1,
             isLoaded: false,
+            isSavingNewReplog: false,
+            successMessage: '',
         };
+
+        this.successMessageTimeoutHandle = 0;
 
         this.handleRowClick = this.handleRowClick.bind(this);
         this.handleAddReplog = this.handleAddReplog.bind(this);
@@ -30,6 +35,10 @@ export default class RepLogApp extends Component {
             });
     }
 
+    componentWillUnmount() {
+        clearTimeout(this.successMessageTimeoutHandle);
+    }
+
     handleRowClick(repLogsId) {
         this.setState({ highlightedRowId: repLogsId });
     }
@@ -40,12 +49,43 @@ export default class RepLogApp extends Component {
             item: item,
         }
 
+        this.setState({
+            isSavingNewReplog: true,
+        });
+
+        const newState = {
+            isSavingNewReplog: false,
+        };
+
         createRepLog(newRep)
             .then(repLog => {
                 this.setState(prevState => {
                     const newRepLogs = [...prevState.repLogs, repLog];
 
-                    return {repLogs: newRepLogs};
+                    this.setSuccessMessage('Rep Log Saved!');
+
+                    return {
+                        ...newState,
+                        repLogs: newRepLogs,
+                        newRepLogValidationErrorMessage: '',
+                    };
+                });
+            })
+            .catch(error => {
+                error.response.json().then(errorsData => {
+                    const errors = errorsData.errors;
+                    const firstError = errors[Object.keys(errors)[0]];
+
+                    // Methode normale
+                    // this.setState(Object.assign({
+                    //     newRepLogValidationErrorMessage: firstError,
+                    // }, newState));
+
+                    //Methode swag expérimentale avec plugin @babel/plugin-proposal-object-rest-spread
+                    this.setState({
+                        ...newState,
+                        newRepLogValidationErrorMessage: firstError,
+                    });
                 });
             });
 
@@ -57,6 +97,21 @@ export default class RepLogApp extends Component {
         // });
     }
 
+    setSuccessMessage(message) {
+        this.setState({
+            successMessage: message,
+        });
+
+        clearTimeout(this.successMessageTimeoutHandle);
+        this.successMessageTimeoutHandle = setTimeout(() => {
+            this.setState({
+                successMessage: '',
+            });
+
+            this.successMessageTimeoutHandle = 0;
+        }, 3000);
+    }
+
     handleHeartChange(heartCount) {
         this.setState({
             numberOfHearts: heartCount,
@@ -64,8 +119,24 @@ export default class RepLogApp extends Component {
     }
 
     handleDeleteRepLog(id) {
-        deleteRepLog(id);
-        
+        this.setState((prevState) => {
+            return {
+                repLogs: prevState.repLogs.map(repLog => {
+                    if (repLog.id !== id) {
+                        return repLog;
+                    }
+                    // Object.assign => arraymerge PHP (+ voir Create method)
+                    //return Object.assign({}, repLog, { isDeleting: true });
+                    return {...repLog, isDeleting: true};
+                })
+            };
+        });
+
+        deleteRepLog(id)
+            .then(() => {
+                this.setSuccessMessage('Item was Un-lifted!')
+            });
+
         this.setState((setState) => {
             return {
                 repLogs: this.state.repLogs.filter(repLogs => repLogs.id !== id)

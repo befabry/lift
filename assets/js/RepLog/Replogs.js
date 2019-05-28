@@ -20,13 +20,16 @@ export default function Replogs(props) {
     const {
         highlightedRowId,
         isLoaded,
+        isSavingNewReplog,
+        newRepLogValidationErrorMessage,
         numberOfHearts,
         onAddReplog,
         onDeleteRepLog,
         onHeartChange,
         onRowClick,
         repLogs,
-        withHeart
+        successMessage,
+        withHeart,
     } = props;
 
     let heart = '';
@@ -46,6 +49,12 @@ export default function Replogs(props) {
                     }}
                 />
 
+                {successMessage && (
+                    <div className='alert alert-success text-center'>
+                        {successMessage}
+                    </div>
+                )}
+
                 <table className="table table-striped">
                     <thead>
                         <tr>
@@ -62,6 +71,7 @@ export default function Replogs(props) {
                         repLogs={repLogs}
                         onDeleteRepLog={onDeleteRepLog}
                         isLoaded={isLoaded}
+                        isSavingNewReplog={isSavingNewReplog}
                     />
                     <tfoot>
                         <tr>
@@ -76,6 +86,7 @@ export default function Replogs(props) {
                     <div className='col-md-12'>
                         <RepLogForm
                             onAddReplog={onAddReplog}
+                            validationErrorMessage={newRepLogValidationErrorMessage}
                         />
                     </div>
                 </div>
@@ -88,11 +99,14 @@ export default function Replogs(props) {
 Replogs.propTypes = {
     highlightedRowId: PropTypes.any,
     isLoaded: PropTypes.bool.isRequired,
+    isSavingNewReplog: PropTypes.bool.isRequired,
+    newRepLogValidationErrorMessage: PropTypes.string.isRequired,
     numberOfHearts: PropTypes.number.isRequired,
     onAddReplog: PropTypes.func.isRequired,
     onDeleteRepLog: PropTypes.func.isRequired,
     onHeartChange: PropTypes.func.isRequired,
     onRowClick: PropTypes.func.isRequired,
     repLogs: PropTypes.array.isRequired,
-    withHeart: PropTypes.bool
+    successMessage: PropTypes.string.isRequired,
+    withHeart: PropTypes.bool,
 };

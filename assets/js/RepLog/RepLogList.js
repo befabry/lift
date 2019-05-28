@@ -12,6 +12,7 @@ export default function RepLogList(props) {
         onDeleteRepLog,
         onRowClick,
         repLogs,
+        isSavingNewReplog,
     } = props;
 
     const handleDeleteClick = function (event, repLogId) {
@@ -34,24 +35,40 @@ export default function RepLogList(props) {
 
     return (
         <tbody>
-            {repLogs.map((repLogs) => (
+            {repLogs.map((repLog) => (
                 <tr
-                    key={repLogs.id}
-                    className={highlightedRowId === repLogs.id ? 'bg-info text-white font-weight-bold' : ''}
-                    onClick={() => onRowClick(repLogs.id)}
+                    key={repLog.id}
+                    className={highlightedRowId === repLog.id ? 'bg-info text-white font-weight-bold' : ''}
+                    onClick={() => onRowClick(repLog.id)}
+                    style={{
+                        opacity: repLog.isDeleting ? .3 : 1
+                    }}
                 >
-                    <td>{repLogs.itemLabel}</td>
-                    <td>{repLogs.reps}</td>
-                    <td>{repLogs.totalWeightLifted}</td>
+                    <td>{repLog.itemLabel}</td>
+                    <td>{repLog.reps}</td>
+                    <td>{repLog.totalWeightLifted}</td>
                     <td>
-                        <a href="#" onClick={(event) => handleDeleteClick(event, repLogs.id)}>
+                        <a href="#" onClick={(event) => handleDeleteClick(event, repLog.id)}>
                             <FontAwesomeIcon icon={faTrash} />
                         </a>
                     </td>
                 </tr>
             ))
             }
-
+            {isSavingNewReplog && (
+                <tr>
+                    {/* style => entering JS then creating an object */}
+                    <td
+                        colSpan="4"
+                        className="text-center"
+                        style={{
+                            opacity: .5
+                        }}
+                    >
+                        <FontAwesomeIcon icon={faSpinner} spin />
+                    </td>
+                </tr>
+            )}
         </tbody>
     )
 }
@@ -59,6 +76,7 @@ export default function RepLogList(props) {
 RepLogList.propTypes = {
     highlightedRowId: PropTypes.any,
     isLoaded: PropTypes.bool.isRequired,
+    isSavingNewReplog: PropTypes.bool.isRequired,
     onDeleteRepLog: PropTypes.func.isRequired,
     onRowClick: PropTypes.func.isRequired,
     repLogs: PropTypes.array.isRequired,

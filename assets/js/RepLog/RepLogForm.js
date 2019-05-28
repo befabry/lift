@@ -17,6 +17,7 @@ export default class RepLogForm extends Component {
             { id: 'fat_cat', text: 'Big Fat Cat' },
             { id: 'laptop', text: 'My Laptop' },
             { id: 'coffee_cup', text: 'Coffee Cup' },
+            { id: 'invalid_item', text: 'Dark Matter' },
         ];
 
         this.handleFormSubmit = this.handleFormSubmit.bind(this);
@@ -51,9 +52,17 @@ export default class RepLogForm extends Component {
 
     render() {
         const { quantityInputError } = this.state;
+        const { validationErrorMessage } = this.props;
 
         return (
             <form onSubmit={this.handleFormSubmit}>
+                {validationErrorMessage && (
+                    <div
+                        className="alert alert-danger"
+                    >
+                        {validationErrorMessage}
+                    </div>
+                )}
                 <div className="form-group">
                     <label className="sr-only control-label required" htmlFor="rep_log_item">
                         What did you lift?
@@ -68,7 +77,7 @@ export default class RepLogForm extends Component {
                         })}
                     </select>
                 </div>
-        <div className="form-group">
+                <div className="form-group">
                     <label className="sr-only form-control-label required" htmlFor="rep_log_reps">
                         How many times?
                     </label>
@@ -86,7 +95,7 @@ export default class RepLogForm extends Component {
                         </div>
                     }
                 </div>
-        <button type="submit" className="btn btn-primary">I Lifted it!</button>
+                <button type="submit" className="btn btn-primary">I Lifted it!</button>
             </form>
         );
     }
@@ -95,4 +104,5 @@ export default class RepLogForm extends Component {
 
 RepLogForm.propTypes = {
     onAddReplog: PropTypes.func.isRequired,
+    validationErrorMessage: PropTypes.string.isRequired,
 }

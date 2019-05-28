@@ -29,13 +29,17 @@ Encore
     .enableVersioning()
     .enableReactPreset()
     .configureBabel((babelConfig) => {
-        if(Encore.isProduction()){
+        if (Encore.isProduction()) {
             babelConfig.plugins.push(
                 'transform-react-remove-prop-types'
-            )
+            );
         }
+
+        babelConfig.plugins.push(
+            '@babel/plugin-proposal-object-rest-spread'
+        );
     })
-;
+    ;
 
 // export the final configuration
 module.exports = Encore.getWebpackConfig();
