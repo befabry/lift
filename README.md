@@ -1,1 +1,3 @@
 # lift
+
+Tutorial completed
