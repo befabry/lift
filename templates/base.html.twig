@@ -83,7 +83,7 @@
 
             {# TODO : Real APP => Voter ! #}
             {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
-                <div id='content'></div>
+                <div id='content' class="col-md-7"></div>
             {% else %}
                 {% block fos_user_content %}{% endblock %}
             {% endif %}

@@ -9,15 +9,14 @@
 
             <table class="table table-striped">
                 <thead>
-                <tr>
-                    <th>What</th>
-                    <th>How many times?</th>
-                    <th>Weight</th>
-                    <th>&nbsp;</th>
-                </tr>
+                    <tr>
+                        <th>What</th>
+                        <th>How many times?</th>
+                        <th>Weight</th>
+                        <th>&nbsp;</th>
+                    </tr>
                 </thead>
-                <tbody>
-                </tbody>
+                <tbody></tbody>
                 <tfoot>
                     <tr>
                         <td>&nbsp;</td>
@@ -34,10 +33,11 @@
         </div>
         <div class="col-md-5">
             <div class="leaderboard">
-                <h2 class="text-center">
+                <h2
+                    class="text-center">
                     {#
-                    <img class="dumbbell" src="{{ asset('build/static/dumbbell.png') }}" />
-                    #}
+                                                            <img class="dumbbell" src="{{ asset('build/static/dumbbell.png') }}" />
+                                                            #}
                     Leaderboard
                 </h2>
 
@@ -51,10 +51,15 @@
     {{ parent() }}
 
     {# {{ encore_entry_link_tags('js/app') }} #}
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@7.11.0/dist/sweetalert2.min.css" />
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@7.11.0/dist/sweetalert2.min.css" rel="stylesheet"/>
 {% endblock %}
 
 {% block javascripts %}
     {{ parent() }}
+
+    <script type="text/javascript">
+        window.REP_LOG_APP_PROPS = {{ repLogAppProps|json_encode|raw }} ;
+    </script>
+
     {{ encore_entry_script_tags('rep_log') }}
 {% endblock %}

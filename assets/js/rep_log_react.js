@@ -4,9 +4,12 @@ import React from "react";
 import RepLogApp from './RepLog/RepLogApp';
 import "./layout";
 
-const shouldShowHeart = true;
+const shouldShowHeart = false;
 
 render(
-    <RepLogApp withHeart={shouldShowHeart} />,
+    <RepLogApp
+        withHeart={shouldShowHeart}
+        {...window.REP_LOG_APP_PROPS}
+    />,
     document.getElementById('content')
 );

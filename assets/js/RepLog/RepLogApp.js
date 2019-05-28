@@ -127,7 +127,7 @@ export default class RepLogApp extends Component {
                     }
                     // Object.assign => arraymerge PHP (+ voir Create method)
                     //return Object.assign({}, repLog, { isDeleting: true });
-                    return {...repLog, isDeleting: true};
+                    return { ...repLog, isDeleting: true };
                 })
             };
         });
@@ -159,5 +159,10 @@ export default class RepLogApp extends Component {
 }
 
 RepLogApp.propTypes = {
+    itemOptions: PropTypes.array,
     withHeart: PropTypes.bool,
 };
+
+RepLogApp.defaultProps = {
+    itemOptions: [],
+}

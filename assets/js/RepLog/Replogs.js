@@ -21,6 +21,7 @@ export default function Replogs(props) {
         highlightedRowId,
         isLoaded,
         isSavingNewReplog,
+        itemOptions,
         newRepLogValidationErrorMessage,
         numberOfHearts,
         onAddReplog,
@@ -39,7 +40,7 @@ export default function Replogs(props) {
 
     return (
         <div className="row">
-            <div className="col-md-7">
+            <div>
                 <h2>Lift History {heart}</h2>
                 <input
                     type='range'
@@ -87,6 +88,7 @@ export default function Replogs(props) {
                         <RepLogForm
                             onAddReplog={onAddReplog}
                             validationErrorMessage={newRepLogValidationErrorMessage}
+                            itemOptions={itemOptions}
                         />
                     </div>
                 </div>
@@ -100,6 +102,7 @@ Replogs.propTypes = {
     highlightedRowId: PropTypes.any,
     isLoaded: PropTypes.bool.isRequired,
     isSavingNewReplog: PropTypes.bool.isRequired,
+    itemOptions: PropTypes.array.isRequired,
     newRepLogValidationErrorMessage: PropTypes.string.isRequired,
     numberOfHearts: PropTypes.number.isRequired,
     onAddReplog: PropTypes.func.isRequired,
