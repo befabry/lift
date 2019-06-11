@@ -20,12 +20,14 @@ class ApiCsrfValidationSubscriber implements EventSubscriberInterface
 {
     public function onKernelRequest(GetResponseEvent $event)
     {
+        //Make sure it runs only for a real request, not sub-requests
         if (!$event->isMasterRequest()) {
             return;
         }
 
         $request = $event->getRequest();
 
+        //No validation needed on safe methods
         if ($request->isMethodSafe(false)) {
             return;
         }
@@ -43,7 +45,7 @@ class ApiCsrfValidationSubscriber implements EventSubscriberInterface
 
             return;
         }
-        //No validation needed on safe methods
+
     }
 
     public static function getSubscribedEvents()
